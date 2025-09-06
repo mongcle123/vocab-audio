@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>영어 단어 플래시카드 (MP3 자동재생)</title>
+<base href="https://mongcle123.github.io/vocab-audio/sounds/">
+<style>
+  :root { --blue-700:#1E88E5; --blue-50:#f0f4ff; --radius:14px; }
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans KR",Arial,"Malgun Gothic",sans-serif;background:var(--blue-50);color:#0f172a}
+  header{padding:20px}
+  h1{margin:0 0 6px;font-size:22px;color:var(--blue-700)}
+  .hint{font-size:14px;color:#475569}
+  .wrap{padding:8px 16px 28px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:18px}
+  .card{perspective:1000px;height:150px;display:block;position:relative}
+  .card input{position:absolute;opacity:0;pointer-events:none}
+  .card-inner{position:relative;width:100%;height:100%;border-radius:var(--radius);transition:transform .6s;transform-style:preserve-3d;box-shadow:0 6px 20px rgba(30,136,229,.15);cursor:pointer;outline:2px solid var(--blue-700);background:#fff}
+  .card input:checked + .card-inner{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;backface-visibility:hidden;padding:12px;text-align:center}
+  .front{color:var(--blue-700);font-weight:800;font-size:20px;background:#fff}
+  .back{transform:rotateY(180deg);background:var(--blue-700);color:#fff;font-size:16px;font-weight:700;line-height:1.4}
+</style>
+</head>
+<body>
+<header>
+  <h1>영어 단어 플래시카드</h1>
+  <div class="hint">카드를 클릭하면 열리고, 해당 단어 발음 MP3가 재생됩니다. 4초 뒤 자동으로 닫혀요.</div>
+</header>
+<div class="wrap"><div class="grid">
+
+  <!-- adapt -->
+  <label class="card"><input type="checkbox" />
+    <div class="card-inner" role="button" aria-label="adapt">
+      <div class="face front">adapt</div>
+      <div class="face back">적응하다; 적합하게 하다</div>
+      <audio src="adapt.mp3" preload="auto" playsinline></audio>
+    </div>
+  </label>
+
+  <!-- adaptation -->
+  <label class="card"><input type="checkbox" />
+    <div class="card-inner" role="button" aria-label="adaptation">
+      <div class="face front">adaptation</div>
+      <div class="face back">적응</div>
+      <audio src="adaptation.mp3" preload="auto" playsinline></audio>
+    </div>
+  </label>
+
+  <!-- address -->
+  <label class="card"><input type="checkbox" />
+    <div class="card-inner" role="button" aria-label="address">
+      <div class="face front">address</div>
+      <div class="face back">주소; 연설; 말을 걸다</div>
+      <audio src="address.mp3" preload="auto" playsinline></audio>
+    </div>
+  </label>
+
+  <!-- admire -->
+  <label class="card"><input type="checkbox" />
+    <div class="card-inner" role="button" aria-label="admire">
+      <div class="face front">admire</div>
+      <div class="face back">존경하다; 감탄하다</div>
+      <audio src="admire.mp3" preload="auto" playsinline></audio>
+    </div>
+  </label>
+
+  <!-- adopt -->
+  <label class="card"><input type="checkbox" />
+    <div class="card-inner" role="button" aria-label="adopt">
+      <div class="face front">adopt</div>
+      <div class="face back">채택하다; 입양하다</div>
+      <audio src="adopt.mp3" preload="auto" playsinline></audio>
+    </div>
+  </label>
+
+</div></div>
+
+<script>
+  const AUTO_CLOSE_MS = 4000;
+  let activeTimer = null;
+  function closeAllCards(exceptCb = null) {
+    document.querySelectorAll('.card input[type="checkbox"]').forEach(cb=>{
+      if(cb!==exceptCb) cb.checked=false;
+    });
+  }
+  function setAutoCloseAndPlay(cb) {
+    if(activeTimer) {clearTimeout(activeTimer);activeTimer=null;}
+    if(cb && cb.checked){
+      const card=cb.parentElement;
+      const audio=card.querySelector('audio');
+      if(audio){try{audio.pause();audio.currentTime=0;setTimeout(()=>audio.play().catch(()=>{}),120);}catch(e){}}
+      activeTimer=setTimeout(()=>{cb.checked=false;activeTimer=null;},AUTO_CLOSE_MS);
+    }
+  }
+  document.addEventListener('DOMContentLoaded',()=>{
+    document.querySelectorAll('.card input[type="checkbox"]').forEach(cb=>{
+      cb.addEventListener('change',()=>{
+        if(cb.checked){closeAllCards(cb);setAutoCloseAndPlay(cb);}
+        else if(activeTimer){clearTimeout(activeTimer);activeTimer=null;}
+      });
+    });
+  });
+</script>
+</body>
+</html>
